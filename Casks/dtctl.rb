@@ -3,7 +3,7 @@ cask "dtctl" do
   name "dtctl"
   desc "kubectl-inspired CLI for Dynatrace - manage workflows, dashboards, SLOs, queries, and more from your terminal"
   homepage "https://github.com/dynatrace-oss/dtctl"
-  version "0.13.0"
+  version "0.13.1"
 
   livecheck do
     skip "Auto-generated on release."
@@ -17,22 +17,22 @@ cask "dtctl" do
   on_macos do
     on_intel do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_darwin_amd64.tar.gz"
-      sha256 "4a6c9855efbb84bddbb5066f80246c891b97720f43a333c4e9d9bdf7cd3e4e9c"
+      sha256 "5cdd3a6bd8568ae6f044b3a35491b8dcbf5f64341acb20f4c292487f35bba882"
     end
     on_arm do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_darwin_arm64.tar.gz"
-      sha256 "db2e9bd24e400e1b5468853cfe36661aa144bb9f81485692b25ebe5c608b7274"
+      sha256 "76ffa2ab92c4c3ecdd47a29c0f673372203f71dc32c4db118ffa29a91cfe0036"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_linux_amd64.tar.gz"
-      sha256 "b19bf60fe95d0d7c22ee466b0164759bbcafcc517986ce42eee374bd96556ff8"
+      sha256 "fe1b932ecc2e939b3121a101d6f95128bda700a3e338367cd60789da2bc87826"
     end
     on_arm do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_linux_arm64.tar.gz"
-      sha256 "38251383f22dd991241a8ef90405fad16ae774d1c18c77f0704ebefcae8e7494"
+      sha256 "c38f15a1d9ab3c883d9ea940c23434d56089af5760ee662fb307fb98bde53e83"
     end
   end
 
