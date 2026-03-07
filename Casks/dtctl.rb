@@ -17,22 +17,22 @@ cask "dtctl" do
   on_macos do
     on_intel do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_darwin_amd64.tar.gz"
-      sha256 "2867c21e6dee74b987929f83e7ea13fed6f8b1888f50f296326a5dcec03b78d1"
+      sha256 "5940a7f667464df1a0d179b274261ff6e6aa88acd8f1fc09f5f20887e0817778"
     end
     on_arm do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_darwin_arm64.tar.gz"
-      sha256 "7494442a1201111f4b8e32c2e6108ab51b969970ae1ce3310d2213afe77f5eb4"
+      sha256 "e7d94e9da911a2c9e155783e20f90b488cd449cb99300544b93dd52336ebc5bd"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_linux_amd64.tar.gz"
-      sha256 "d53db796104e7895d435077ff9f35237210a01c4748fa5cd39a7196f4b880dab"
+      sha256 "d3aa2195e83e27c62f79e85466456c1e971fca192871d8d783ddc8c3e09dad63"
     end
     on_arm do
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_linux_arm64.tar.gz"
-      sha256 "8a9cc7fd5e76959db404c821eb563c830d5077d173c6dd81d9208a622ba3482f"
+      sha256 "0868d3224568cdee991c4370b0d9aa8195069cd0190e0db1d100fb435c79c289"
     end
   end
 
