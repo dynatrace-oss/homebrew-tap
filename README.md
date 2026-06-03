@@ -7,11 +7,13 @@ Homebrew formulae for Dynatrace open-source tools.
 | Formula | Description |
 |---------|-------------|
 | [dtctl](https://github.com/dynatrace-oss/dtctl) | kubectl-inspired CLI for Dynatrace |
+| [dtmgd](https://github.com/dynatrace-oss/dtmgd) | kubectl-inspired CLI for Dynatrace Managed |
 
 ## Installation
 
 ```bash
 brew install dynatrace-oss/tap/dtctl
+brew install dynatrace-oss/tap/dtmgd
 ```
 
 ## Updating
@@ -19,6 +21,7 @@ brew install dynatrace-oss/tap/dtctl
 ```bash
 brew update
 brew upgrade dtctl
+brew upgrade dtmgd
 ```
 
 ## License
