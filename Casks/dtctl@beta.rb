@@ -8,26 +8,26 @@
 #   brew install dynatrace-oss/tap/dtctl@beta
 #
 cask "dtctl@beta" do
-  version "0.32.0-rc.4"
+  version "0.36.0-rc.1"
 
   on_macos do
     on_intel do
-      sha256 "eaafd0234acab5e8398d00270e7f827a88c3f997c3b013de4a4075800870172d"
+      sha256 "33aa7ba2941b8364f3bba10b91a4d1a7a8adfc3376237c2d979f979d0deb64ad"
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_darwin_amd64.tar.gz"
     end
     on_arm do
-      sha256 "1d3e2bbea0d479ae5f6ef2f96e41c8490679b34a15cb8ccac9fc587a21c3c2c9"
+      sha256 "e4ec335b47ccd4b015f81b47c3491ba84e0b4efe9a3d3ceeb277bc76685fb856"
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_darwin_arm64.tar.gz"
     end
   end
 
   on_linux do
     on_intel do
-      sha256 "19ae7ec24d72545281417e8139f7d323e3fb86138364a814a9c71d6ea7d15cc7"
+      sha256 "a759c1eddb1d4f4a8609e7b914f3f001c5214f5d414eb246509e3b79b0cf0648"
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_linux_amd64.tar.gz"
     end
     on_arm do
-      sha256 "23d0c9c79faa446df5ced1602f197d026d1b81ce8eb403f1ea8584fef373620b"
+      sha256 "d96eec22f66eda13b97fed3d6e488cf339609c7a947ae37c01964f98721ada0b"
       url "https://github.com/dynatrace-oss/dtctl/releases/download/v#{version}/dtctl_#{version}_linux_arm64.tar.gz"
     end
   end
