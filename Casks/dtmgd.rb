@@ -37,9 +37,9 @@ cask "dtmgd" do
   fish_completion "completions/dtmgd.fish"
   zsh_completion "completions/dtmgd.zsh"
 
-  postflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/dtmgd"]
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/dtmgd"]
     end
   end
 

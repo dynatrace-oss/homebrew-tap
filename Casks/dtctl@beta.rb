@@ -48,8 +48,10 @@ cask "dtctl@beta" do
   fish_completion "completions/dtctl.fish"
   zsh_completion "completions/dtctl.zsh"
 
-  postflight do
-    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/dtctl"] if OS.mac?
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/dtctl"]
+    end
   end
 
   # No zap stanza required
