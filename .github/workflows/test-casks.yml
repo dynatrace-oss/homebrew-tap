@@ -35,8 +35,26 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # dtctl.rb and dtmgd.rb are GoReleaser-generated ("DO NOT EDIT"), and the
+      # generator emits a handful of offenses that cannot be fixed in this tap
+      # because the next release overwrites them:
+      #   Cask/StanzaOrder, Cask/StanzaGrouping  - on_intel/on_arm nesting
+      #   Cask/Desc, Layout/LineLength           - desc comes from .goreleaser.yaml
+      #   Layout/EmptyLinesAroundBlockBody       - trailing blank line in template
+      # Everything else is a hard failure, including Cask/InstallSteps, which is
+      # what catches a cask regressing to a deprecated stanza.
       - name: Style-check casks
-        run: brew style Casks/*.rb
+        run: |
+          brew style \
+            --except-cops=Cask/StanzaOrder,Cask/StanzaGrouping,Cask/Desc,Layout/LineLength,Layout/EmptyLinesAroundBlockBody \
+            Casks/*.rb
+
+      # Informational: the full report, including the generator offenses above.
+      # Useful when the generator changes, but not a gate.
+      - name: Full style report
+        if: always()
+        continue-on-error: true
+        run: brew style Casks/*.rb || true
 
       # `brew audit` refuses file paths, so the casks must be reachable as a
       # tap before they can be audited by name.
