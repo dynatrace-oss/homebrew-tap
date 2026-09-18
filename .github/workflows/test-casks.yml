@@ -1,0 +1,123 @@
+name: Test casks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # Homebrew changes its cask rules between releases -- the `Cask/InstallSteps`
+  # rule that deprecated `postflight` is one example -- and release assets can
+  # disappear from under a pinned cask. Run weekly so either surfaces here
+  # rather than in a user's install.
+  schedule:
+    - cron: "0 6 * * 1"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+  HOMEBREW_NO_ENV_HINTS: 1
+  HOMEBREW_NO_ANALYTICS: 1
+
+jobs:
+  # Catches style and metadata regressions: a cask reverting to a deprecated
+  # stanza (which installs fine but fails `brew style`), or a pinned release
+  # asset that has gone missing.
+  lint:
+    name: Lint casks
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # dtctl.rb and dtmgd.rb are GoReleaser-generated ("DO NOT EDIT"), and the
+      # generator emits a handful of offenses that cannot be fixed in this tap
+      # because the next release overwrites them:
+      #   Cask/StanzaOrder, Cask/StanzaGrouping  - on_intel/on_arm nesting
+      #   Cask/Desc, Layout/LineLength           - desc comes from .goreleaser.yaml
+      #   Layout/EmptyLinesAroundBlockBody       - trailing blank line in template
+      # Everything else is a hard failure, including Cask/InstallSteps, which is
+      # what catches a cask regressing to a deprecated stanza.
+      - name: Style-check casks
+        run: |
+          brew style \
+            --except-cops=Cask/StanzaOrder,Cask/StanzaGrouping,Cask/Desc,Layout/LineLength,Layout/EmptyLinesAroundBlockBody \
+            Casks/*.rb
+
+      # Informational: the full report, including the generator offenses above.
+      # Useful when the generator changes, but not a gate.
+      - name: Full style report
+        if: always()
+        continue-on-error: true
+        run: brew style Casks/*.rb || true
+
+      # `brew audit` refuses file paths, so the casks must be reachable as a
+      # tap before they can be audited by name.
+      - name: Register checkout as a local tap
+        run: ./.github/scripts/register-tap.sh
+
+      - name: Audit casks
+        run: |
+          set -euo pipefail
+          for cask in Casks/*.rb; do
+            token="$(basename "$cask" .rb)"
+            echo "::group::audit $token"
+            brew audit --cask --online "dynatrace-oss/tap/$token"
+            echo "::endgroup::"
+          done
+
+  # Catches functional regressions: the cask must install, link, and leave a
+  # runnable binary with the macOS quarantine attribute cleared.
+  install:
+    name: Install ${{ matrix.cask }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # One cask per job. Casks that provide the same binary name (e.g. a
+        # future dtctl@beta alongside dtctl) cannot coexist on one runner.
+        include:
+          - cask: dtctl
+            binary: dtctl
+          - cask: dtmgd
+            binary: dtmgd
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Register checkout as a local tap
+        run: ./.github/scripts/register-tap.sh
+
+      - name: Install cask
+        run: brew install --cask "dynatrace-oss/tap/${{ matrix.cask }}"
+
+      - name: Assert quarantine attribute is cleared
+        run: |
+          set -euo pipefail
+          staged="$(brew --caskroom)/${{ matrix.cask }}"
+          binary="$(find "$staged" -type f -name '${{ matrix.binary }}' -perm +111 -print -quit)"
+          if [[ -z "$binary" ]]; then
+            echo "::error::staged binary '${{ matrix.binary }}' not found under $staged"
+            exit 1
+          fi
+          echo "Staged binary: $binary"
+          attrs="$(xattr -l "$binary" || true)"
+          echo "Extended attributes: ${attrs:-<none>}"
+          if grep -q "com.apple.quarantine" <<<"$attrs"; then
+            echo "::error::com.apple.quarantine is still set on $binary -- the postflight quarantine strip did not run"
+            exit 1
+          fi
+
+      # A successful exec is the real proof Gatekeeper is not blocking it.
+      - name: Assert the linked binary runs
+        run: |
+          set -euo pipefail
+          bin="$(brew --prefix)/bin/${{ matrix.binary }}"
+          "$bin" version || "$bin" --version
+
+      - name: Uninstall cask
+        run: brew uninstall --cask "dynatrace-oss/tap/${{ matrix.cask }}"
