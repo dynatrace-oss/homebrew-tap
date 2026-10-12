@@ -36,8 +36,8 @@ cask "dtctl" do
   fish_completion "completions/dtctl.fish"
   zsh_completion "completions/dtctl.zsh"
 
-  postflight do
-    if OS.mac?
+  postflight_steps do
+    on_macos do
       system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/dtctl"]
     end
   end
