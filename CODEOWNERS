@@ -1,5 +1,5 @@
 # OSPO owns the Homebrew tap by default.
-* @dynatrace-oss/open-source-team
+* @dynatrace-oss/open-source-team @dynatrace-oss/rd-sg-team-appdev-appforge
 
 # Doron maintains the dtui cask
-/Casks/dtui.rb @dynatrace-oss/open-source-team @DynaDoron
+/Casks/dtui.rb @dynatrace-oss/open-source-team @DynaDoron @dynatrace-oss/rd-sg-team-appdev-appforge
